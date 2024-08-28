@@ -15,7 +15,7 @@
 
 **Co-mutation and gene change boolean expressions**
 
-* In order to be able to compare a mutation in one gene to another co-mutated gene with no specified protein change, you would want to make ‘is_gene_change’ = False and ‘comutation’ = True. For example if I wanted to compare NSCLC KRAS G12C mutants to NSCLC KRAS G12C / SMARCA1 co-mutants, the code would look like this:
+* In order to be able to compare a mutation in one gene to another co-mutated gene with no specified protein change, you would want to make ‘is_gene_change’ = False and ‘comutation’ = True. For example if I wanted to compare NSCLC KRAS G12C mutants to NSCLC KRAS G12C / SMARCA4 co-mutants, the code would look like this:
 
 ``` Ruby
 # filter model.csv to only keep indices which contain cancer type declared
