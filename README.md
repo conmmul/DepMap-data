@@ -1,5 +1,8 @@
 **Instructions**
 
+**Importing packages**
+
+* Before importing the packages in the first lines of the code, it may be necessary to create a new line above and run pip install {package} (replacing {package} with the desired one to install)
 
 **Create .csv file variables**
 
