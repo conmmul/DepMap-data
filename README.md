@@ -76,6 +76,8 @@ else:
 ```
 * In this instance the 1.25 and +/- 5 can be raised or lowered to change the amount of values that have the gene names labeled.
 
+* If the plot is taking a long time to load, you will likely have to change these values to something higher and then adjust it accordingly (it shouldn't take more than 30 seconds)
+
 * The plot title can also be changed by altering the string in plt.title (there is a comment indicating where this change should be done) 
 	
 	
