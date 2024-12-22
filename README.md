@@ -1,8 +1,13 @@
-**Instructions**
+## **Instructions**
 
-**Importing packages**
+**Requirements**
+* pandas
+* matplotlib
+* scipy
+* numpy
+* gseapy
+* seaborn
 
-* Before importing the packages in the first lines of the code, it may be necessary to create a new line above and run pip install {package} (replacing {package} with the desired one to install)
 
 **Create .csv file variables**
 
@@ -81,7 +86,7 @@ else:
 * The plot title can also be changed by altering the string in plt.title (there is a comment indicating where this change should be done) 
 	
 	
-**Grouped Bar Plots**
+## **Grouped Bar Plots**
 
 * Uses the same file paths for csv files as the volcano plot script
 
