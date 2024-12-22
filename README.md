@@ -81,3 +81,16 @@ else:
 * The plot title can also be changed by altering the string in plt.title (there is a comment indicating where this change should be done) 
 	
 	
+**Grouped Bar Plots**
+
+* Uses the same file paths for csv files as the volcano plot script
+
+* gmt files for GSEA should be downloaded through MSigDB (www.gsea-msigdb.org)
+
+* Oncotree Codes can be used to specify the cancer type intended (PAAD, LUAD, COAD, etc.)
+
+* Only one protein should be tested; comutations are not currently supported
+
+* List of mutations can be any length, but fewer mutations is faster and makes a cleaner graph
+
+* P-value and Q-value cutoffs, gene sets, and GSEA parameters can be changed within the 'rungsea' function
