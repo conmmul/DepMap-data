@@ -12,7 +12,7 @@
 * seaborn
 
 ## Data Availability
-All data can be found in the [DepMap portal](https://depmap.org/portal/) and must be downloaded locally. The data were uploaded to Figshare with the DOI [10.6084/m9.figshare.14115569](10.6084/m9.figshare.14115569).
+All data can be found in the [DepMap portal](https://depmap.org/portal/) and must be downloaded locally. The data were uploaded to Figshare with the DOI [10.25452/figshare.plus.27993248.v1](https://doi.org/10.25452/figshare.plus.27993248.v1).
 
 ## Grouped Bar Plot Instructions
 
