@@ -1,6 +1,9 @@
-## **Instructions**
+[![python](https://img.shields.io/badge/Python-3.10-3776AB.svg?style=flat&logo=python&logoColor=white)](https://www.python.org)
+[![jupyerlab](https://img.shields.io/badge/Jupyter-Lab-F37626.svg?style=flat&logo=jupyter)](https://jupyter.org) <br>
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![License: GPLv3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
-**Requirements**
+## **Requirements**
 * pandas
 * matplotlib
 * scipy
@@ -8,17 +11,37 @@
 * gseapy
 * seaborn
 
+## Data Availability
+All data can be found in the [DepMap portal](https://depmap.org/portal/) and must be downloaded locally. The data were uploaded to Figshare with the DOI [10.6084/m9.figshare.14115569](10.6084/m9.figshare.14115569).
 
-**Create .csv file variables**
+## Grouped Bar Plot Instructions
+
+* Uses the same file paths for csv files as the volcano plot script
+
+* gmt files for GSEA should be downloaded through MSigDB (www.gsea-msigdb.org)
+
+* Oncotree Codes can be used to specify the cancer type intended (PAAD, LUAD, COAD, etc.)
+
+* Only one protein should be tested; comutations are not currently supported
+
+* List of mutations can be any length, but fewer mutations is faster and makes a cleaner graph
+
+* P-value and Q-value cutoffs, gene sets, and GSEA parameters can be changed within the 'rungsea' function
+
+
+
+## Volcano Plot Instructions
+
+### 1. **Create .csv file variables**
 
 * When declaring the file name variables, be sure to edit the first column in the CRISPRGeneEffect.csv to have ‘ModelID’ as the name for the first column and save before passing them into a dataframe.
 
-**Declaring variables to sort the .csv files**
+### 2. **Declaring variables to sort the .csv files**
 * To change the type of cancer for the first mutation, the variable ‘cancer’ must be declared to match exactly what is written in the model.csv file. This will filter to only the model ids that have that type of cancer.
 * To change the gene and the exact protein change in the first mutant, the variable ‘gene’ must match exactly what is written in the OmicsSomaticMutation.csv file under the “HugoSymbol” column. The gene change must match exactly what is written in the OmicsSomaticMutation.csv file under the “ProteinChange” column. 
 * For the second gene that is being compared, the same steps should be taken to change the type of cancer as well as the gene that is being compared.
 
-**Co-mutation and gene change boolean expressions**
+### 3. **Co-mutation and gene change boolean expressions**
 
 * In order to be able to compare a mutation in one gene to another co-mutated gene with no specified protein change, you would want to make ‘is_gene_change’ = False and ‘comutation’ = True. For example if I wanted to compare NSCLC KRAS G12C mutants to NSCLC KRAS G12C / SMARCA4 co-mutants, the code would look like this:
 
@@ -72,7 +95,7 @@ else:
 * In order to be able to compare a mutation in one gene to another non-co-mutated gene with a specific protein change, you would want to make ‘is_gene_change’ = True and ‘comutation’ = False. This can be helpful if you want to compare, for example, NSCLC KRAS G12C mutants to NSCLC KRAS G12V mutants. 
 
 
-**Making the plot**
+### 4. **Making the plot**
 
 * The rest of the code after filtering the dataframes is done automatically, however, the plot will likely need to be edited in order to look clean. Since the -log(p-value) varies drastically over each comparison, the values here may require editing:
 ``` Ruby
@@ -84,18 +107,3 @@ else:
 * If the plot is taking a long time to load, you will likely have to change these values to something higher and then adjust it accordingly (it shouldn't take more than 30 seconds)
 
 * The plot title can also be changed by altering the string in plt.title (there is a comment indicating where this change should be done) 
-	
-	
-## **Grouped Bar Plots**
-
-* Uses the same file paths for csv files as the volcano plot script
-
-* gmt files for GSEA should be downloaded through MSigDB (www.gsea-msigdb.org)
-
-* Oncotree Codes can be used to specify the cancer type intended (PAAD, LUAD, COAD, etc.)
-
-* Only one protein should be tested; comutations are not currently supported
-
-* List of mutations can be any length, but fewer mutations is faster and makes a cleaner graph
-
-* P-value and Q-value cutoffs, gene sets, and GSEA parameters can be changed within the 'rungsea' function
