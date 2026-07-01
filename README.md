@@ -1,108 +1,93 @@
-[![python](https://img.shields.io/badge/Python-FFD43B?style=for-the-badge&logo=python&logoColor=blue)](https://www.python.org)
-[![jupyerlab](https://img.shields.io/badge/Jupyter-F37626.svg?&style=for-the-badge&logo=Jupyter&logoColor=white)](https://jupyter.org) 
-[![pandas](https://img.shields.io/badge/Pandas-2C2D72?style=for-the-badge&logo=pandas&logoColor=white)](https://pandas.pydata.org/)<br>
+0# KRAS Allele-Specific Gene Dependencies in Colorectal Cancer
+
+![Python](https://img.shields.io/badge/Python-FFD43B?style=for-the-badge&logo=python&logoColor=blue)
+![Jupyter](https://img.shields.io/badge/Jupyter-F37626.svg?style=for-the-badge&logo=Jupyter&logoColor=white)
+![pandas](https://img.shields.io/badge/Pandas-2C2D72?style=for-the-badge&logo=pandas&logoColor=white)
 [![License: GPLv3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
-## **Requirements**
-* pandas
-* matplotlib
-* scipy
-* numpy
-* gseapy
+## Motivation
+When I first started working on this project during my Summer 2024 research in the Westover lab (UTSW), the idea was to investigate KRAS co-mutations and how they affect lethality using the same general workflow as shown here. I worked for a while figuring out pandas and scipy to produce some volcano plots comparing co-mutant lethality. I stumbled upon the main findings of this project mostly on accident. I was looking up some of the genes that were consistently significant by ANOVA and noticed that many of them were involved in ribosome biogenesis, which has been an interesting field of study in cancer biology recently. This brought me to the idea that this could suggest that G12D cell lines may depend on ribosomal biogenesis regulation more than other mutants. This is consistent with findings that G12D preferentially signals through PI3K/AKT/mTOR, which regulates ribosome biogenesis. I learned so much working on this project from hours on stack overflow and different Python library documentations. I'm hoping these findings can be experimentally validated some day, but the work was rewarding regardless.
 
-## Data Availability
-All data can be found in the [DepMap portal](https://depmap.org/portal/) and must be downloaded locally. The data were uploaded to Figshare with the DOI [10.25452/figshare.plus.27993248.v1](https://doi.org/10.25452/figshare.plus.27993248.v1).
+## Background
 
-## Grouped Bar Plot Instructions
+KRAS is the most frequently mutated oncogene in human cancer. In colorectal adenocarcinoma (COAD), approximately 40% of tumors harbor a KRAS mutation, with G12D being the most prevalent allele (~12% of all CRC). Different KRAS alleles have distinct biochemical properties — G12D preferentially activates PI3K signaling, G12V shows the strongest intrinsic GTPase impairment, and A146T drives faster nucleotide exchange with a weaker transformation potential — but whether these differences translate into allele-specific genetic vulnerabilities is not well established.
 
-* Uses the same file paths for csv files as the volcano plot script
+This project uses genome-wide CRISPR knockout data from the [DepMap](https://depmap.org/portal/) 24Q2 release to identify genes and pathways that are selectively essential in KRAS-mutant colorectal cancer cell lines. By comparing CRISPR gene effect scores (Chronos) between KRAS mutant and wild-type COAD lines, we nominate potential therapeutic vulnerabilities that may differ across alleles.
 
-* gmt files for GSEA should be downloaded through MSigDB (www.gsea-msigdb.org)
+## Key Findings
 
-* Oncotree Codes can be used to specify the cancer type intended (PAAD, LUAD, COAD, etc.)
+- **Ribosome biogenesis is the top enriched pathway** in KRAS G12D COAD lines (KEGG_RIBOSOME: NES = −1.86, FDR = 0), followed by proteasome, spliceosome, RNA polymerase, and DNA replication pathways — all with FDR < 0.001
+- **RPS7** is the top individual gene hit (p = 6.98 × 10⁻⁵), consistent with oncogenic KRAS elevating demand on protein synthesis machinery and with RPS7's known role in p53 activation under ribosomal stress
+- One-way ANOVA across G12D, G12V, A146T, and WT groups identifies a shared set of core cellular machinery dependencies, with the strongest and most consistent signal in G12D lines
+- The pattern is consistent with the oncogenic stress hypothesis: hyperproliferation driven by mutant KRAS creates elevated dependency on ribosomal and proteasomal function relative to non-transformed KRAS WT lines
 
-* Only one protein should be tested; comutations are not currently supported
-
-* List of mutations can be any length, but fewer mutations is faster and makes a cleaner graph
-
-* P-value and Q-value cutoffs, gene sets, and GSEA parameters can be changed within the 'rungsea' function
-
-
-
-## Volcano Plot Instructions
-
-### 1. **Create .csv file variables**
-
-* When declaring the file name variables, be sure to edit the first column in the CRISPRGeneEffect.csv to have ‘ModelID’ as the name for the first column and save before passing them into a dataframe.
-
-### 2. **Declaring variables to sort the .csv files**
-* To change the type of cancer for the first mutation, the variable ‘cancer’ must be declared to match exactly what is written in the model.csv file. This will filter to only the model ids that have that type of cancer.
-* To change the gene and the exact protein change in the first mutant, the variable ‘gene’ must match exactly what is written in the OmicsSomaticMutation.csv file under the “HugoSymbol” column. The gene change must match exactly what is written in the OmicsSomaticMutation.csv file under the “ProteinChange” column. 
-* For the second gene that is being compared, the same steps should be taken to change the type of cancer as well as the gene that is being compared.
-
-### 3. **Co-mutation and gene change boolean expressions**
-
-* In order to be able to compare a mutation in one gene to another co-mutated gene with no specified protein change, you would want to make ‘is_gene_change’ = False and ‘comutation’ = True. For example if I wanted to compare NSCLC KRAS G12C mutants to NSCLC KRAS G12C / SMARCA4 co-mutants, the code would look like this:
-
-``` Ruby
-# filter model.csv to only keep indices which contain cancer type declared
-cancer = "Non-Small Cell Lung Cancer"
-filter_model = model_df[model_df["OncotreePrimaryDisease"] == cancer]
-# filter the OmicsSomaticMutations.csv to only include model ids that have declared cancer type
-osm_filter = pd.merge(filter_model, osm_df, on=['ModelID'], how='inner')
-# filter that dataframe to only include the gene and mutation declared
-gene = 'KRAS'
-mutation = "p.G12C"
-osm_gene_filter = osm_filter[(osm_filter['HugoSymbol'] == gene)]
-osm_mutant_filter = osm_gene_filter[(osm_gene_filter['ProteinChange'] == mutation)]
-
---------------------------------------------------------------------------------------------------------
-
-# filter such that another dataframe is created for all modelIDs that have a mutation in another gene
-# if there is a gene change in the second protein 'is_gene_change' should = True
-cancer_2 = "Non-Small Cell Lung Cancer"
-filter_model_2 = model_df[model_df["OncotreePrimaryDisease"] == cancer_2]
-comutation_gene = "SMARCA4"
-osm_filter_2 = pd.merge(filter_model_2, osm_df, on=['ModelID'], how='inner')
-osm_comutant = osm_filter_2[(osm_filter_2['HugoSymbol'] == comutation_gene)]
-
-is_gene_change = False
-
-if is_gene_change == False:
-    pass
-else:
-    comutation_change = "p.Q61H"
-    osm_comutant_filter = osm_comutant[(osm_comutant['ProteinChange'] == comutation_change)]
-
---------------------------------------------------------------------------------------------------------
-
-# compare the two dataframes. The models that have a mutation for both the gene and comutant gene will be in a comutant dataframe.
-# the models that only have the gene mutation will be under no_comutation
-# if there is a comutation, comutation = True, if not comutation = False
-comutation = True
-
-if comutation == True:
-    comutant = osm_mutant_filter.merge(osm_comutant, on=['ModelID'], how='inner')
-    no_comutant = osm_mutant_filter.merge(osm_comutant, on=['ModelID'], how='left')
-
-else:
-    comutant = osm_comutant_filter
-    no_comutant = osm_mutant_filter
+## Repository Structure
 
 ```
-
-* In order to be able to compare a mutation in one gene to another non-co-mutated gene with a specific protein change, you would want to make ‘is_gene_change’ = True and ‘comutation’ = False. This can be helpful if you want to compare, for example, NSCLC KRAS G12C mutants to NSCLC KRAS G12V mutants. 
-
-
-### 4. **Making the plot**
-
-* The rest of the code after filtering the dataframes is done automatically, however, the plot will likely need to be edited in order to look clean. Since the -log(p-value) varies drastically over each comparison, the values here may require editing:
-``` Ruby
- if volcano.iloc[i].nlogpvalue > 1.25 and (volcano.iloc[i].log2FC > 5 or volcano.iloc[i].log2FC < 5):
-
+DepMap-data/
+├── notebooks/
+│   ├── DepMap_GSEA.ipynb     # Differential dependency analysis + pre-ranked GSEA (G12D vs WT)
+│   ├── anova.ipynb           # One-way ANOVA across G12D, G12V, A146T, and WT groups
+│   └── boxplots.ipynb        # Publication-quality box plots for top hits
+├── outputs/                  # Generated figures (not tracked by git)
+├── environment/
+│   └── requirements.txt      # Python dependencies with versions
+└── README.md
 ```
-* In this instance the 1.25 and +/- 5 can be raised or lowered to change the amount of values that have the gene names labeled.
 
-* If the plot is taking a long time to load, you will likely have to change these values to something higher and then adjust it accordingly (it shouldn't take more than 30 seconds)
+## Data
 
-* The plot title can also be changed by altering the string in plt.title (there is a comment indicating where this change should be done) 
+All data are from the **DepMap Public 24Q2 release** and must be downloaded locally from the [DepMap portal](https://depmap.org/portal/). The specific files used are:
+
+| File | Description |
+|------|-------------|
+| `CRISPRGeneEffect.csv` | Chronos CRISPR gene effect scores across all cell lines |
+| `OmicsSomaticMutations.csv` | Somatic mutation calls per cell line |
+| `Model.csv` | Cell line metadata including cancer type (OncotreeCode) |
+| `CRISPRGeneDependency.csv` | Probabilistic dependency scores |
+
+The data used in this analysis have also been archived at Figshare:
+**DOI:** [10.25452/figshare.plus.27993248.v1](https://doi.org/10.25452/figshare.plus.27993248.v1)
+
+Gene sets (KEGG, PID, BioCarta) are from [MSigDB](https://www.gsea-msigdb.org/gsea/msigdb/) v2024.1.
+
+## Reproducing the Analysis
+
+**1. Clone the repository**
+```bash
+git clone https://github.com/conmmul/DepMap-data.git
+cd DepMap-data
+```
+
+**2. Install dependencies**
+```bash
+pip install -r environment/requirements.txt
+```
+
+**3. Download data**
+
+Download the four DepMap files listed above from the [DepMap portal](https://depmap.org/portal/) and place them in a local directory. Download the KEGG, PID, and BioCarta gene sets from [MSigDB](https://www.gsea-msigdb.org/gsea/msigdb/).
+
+**4. Configure paths**
+
+Each notebook has a config cell near the top. Update `DATA_DIR` and (for the GSEA notebook) `GENESETS_DIR` to point to your local copies of the data.
+
+**5. Run notebooks**
+
+Run the notebooks in this order:
+1. `DepMap_GSEA.ipynb` — differential dependency and pathway enrichment
+2. `anova.ipynb` — multi-allele ANOVA
+3. `boxplots.ipynb` — visualization of top hits
+
+## Dependencies
+
+See `environment/requirements.txt`. Core dependencies:
+
+- Python 3.10+
+- pandas, numpy, scipy, matplotlib
+- gseapy
+- statsmodels
+
+## Methods Summary
+
+COAD cell lines were stratified by KRAS genotype using `OmicsSomaticMutations.csv` and `Model.csv`. The wild-type group excludes all KRAS-mutant lines regardless of allele. For the two-group comparison (G12D vs WT), a Welch's t-test was applied across all genes followed by Benjamini-Hochberg FDR correction. Genes were ranked by mean Chronos score in G12D lines and used as input for pre-ranked GSEA against KEGG gene sets (gseapy, 1000 permutations). For the multi-allele comparison, a one-way ANOVA was applied across G12D, G12V, A146T, and WT groups with BH correction.
