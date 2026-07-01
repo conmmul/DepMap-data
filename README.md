@@ -24,7 +24,7 @@ This project uses genome-wide CRISPR knockout data from the [DepMap](https://dep
 ### Repository Structure
 
 ```
-DepMap-data/
+kras-depmap/
 ├── notebooks/
 │   ├── DepMap_GSEA.ipynb     # Differential dependency analysis + pre-ranked GSEA (G12D vs WT)
 │   ├── anova.ipynb           # One-way ANOVA across G12D, G12V, A146T, and WT groups
@@ -55,8 +55,8 @@ Gene sets (KEGG, PID, BioCarta) are from [MSigDB](https://www.gsea-msigdb.org/gs
 
 **1. Clone the repository**
 ```bash
-git clone https://github.com/conmmul/DepMap-data.git
-cd DepMap-data
+git clone https://github.com/conmmul/kras-depmap.git
+cd kras-depmap
 ```
 
 **2. Install dependencies**
